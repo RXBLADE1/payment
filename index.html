@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>UPI Payment Gateway</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 350px;
+    }
+
+    .logo {
+      height: 50px;
+      margin-bottom: 10px;
+    }
+
+    .qr-code img {
+      width: 200px;
+      height: 200px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .upi-id {
+      font-weight: bold;
+      background: #e3f2fd;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .button {
+      margin-top: 20px;
+      background: #6200ea;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .app-list {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .app-list button {
+      display: block;
+      margin: 10px auto;
+      width: 80%;
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #f5f5f5;
+      cursor: pointer;
+    }
+
+    .app-list button:hover {
+      background: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img id="logo" class="logo" src="" alt="App Logo" />
+    <h3>Scan to Pay</h3>
+    <div class="qr-code">
+      <img id="qrImage" src="" alt="QR Code" />
+    </div>
+    <div class="upi-id">Pay to: sarkar726@fam</div>
+    <button class="button" onclick="showApps()">Select Payment App</button>
+    <div class="app-list" id="appList">
+      <button onclick="payWith('phonepe')">PhonePe</button>
+      <button onclick="payWith('paytm')">Paytm</button>
+      <button onclick="payWith('bhim')">BHIM</button>
+      <button onclick="payWith('fampay')">FamPay</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const qrData = [
+        {
+          logo: "https://upload.wikimedia.org/wikipedia/commons/9/9b/PhonePe_Logo_2022.svg",
+          name: "PhonePe",
+        },
+        {
+          logo: "https://upload.wikimedia.org/wikipedia/commons/5/55/Paytm_logo.png",
+          name: "Paytm",
+        },
+        {
+          logo: "https://upload.wikimedia.org/wikipedia/commons/e/e1/BHIM_logo.svg",
+          name: "BHIM",
+        },
+        {
+          logo: "https://play-lh.googleusercontent.com/kbWZKWPIepR1RznYxXwGZgF-ZNjNypFnv3g7ocmLfXbyVz3xTHxvj2dwYJ7e_6Wez-0=w240-h480-rw",
+          name: "FamPay",
+        },
+      ];
+
+      const random = qrData[Math.floor(Math.random() * qrData.length)];
+      document.getElementById("logo").src = random.logo;
+      document.getElementById("qrImage").src =
+        "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=sarkar726@fam&pn=Sarkar&cu=INR";
+    });
+
+    function showApps() {
+      document.getElementById("appList").style.display = "block";
+    }
+
+    function payWith(app) {
+      const upiID = "sarkar726@fam";
+      const name = "Sarkar";
+      const amount = "1";
+
+      const upiUrl = `upi://pay?pa=${upiID}&pn=${name}&am=${amount}&cu=INR`;
+
+      const scheme = {
+        phonepe: "phonepe://pay",
+        paytm: "paytmmp://pay",
+        bhim: "bhim://upi/pay",
+        fampay: "fampay://upi/pay",
+      };
+
+      const intent = `${scheme[app]}?${upiUrl.split("?")[1]}`;
+      window.location.href = intent;
+    }
+  </script>
+</body>
+</html>
